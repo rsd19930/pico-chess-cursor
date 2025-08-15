@@ -100,7 +100,8 @@ export function createMatchmakingService(io: Server, gameService: GameService, c
     const gameCurrent = gameService.getGame(gameId);
     if (!gameCurrent || gameCurrent.state.turn !== color) return;
     if (payload.drop && !(gameCurrent.state.hands[color].includes(payload.drop.piece as any))) return;
-    const result = gameService.playerMove(gameId, color, payload);
+    const movePayload: any = payload.drop ? { drop: { piece: payload.drop.piece as any, square: payload.drop.square } } : { from: payload.from, to: payload.to };
+    const result = gameService.playerMove(gameId, color, movePayload);
     if (!result) return;
     io.to(gameId).emit('state', result.state);
     lastTick.set(gameId, Date.now());

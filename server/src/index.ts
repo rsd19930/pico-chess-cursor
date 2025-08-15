@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
+import path from 'path';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -46,6 +47,15 @@ io.on('connection', (socket) => {
 });
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Serve client build (production)
+try {
+  const clientDist = path.resolve(__dirname, '../../client/dist');
+  app.use(express.static(clientDist));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+} catch {}
 
 server.listen(PORT, () => {
   console.log(`Pico Chess server running on :${PORT}`);

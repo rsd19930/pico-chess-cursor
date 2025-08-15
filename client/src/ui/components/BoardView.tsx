@@ -22,7 +22,7 @@ function squareRect(index: number, orientation: 'white'|'black'){
 
 function pieceSrc(p: Piece): string{
   const color = p.color === 'white' ? 'White' : 'Black';
-  const name = p.type === 'K' ? 'King' : p.type === 'Q' ? 'Queen' : p.type === 'R' ? 'Rook' : p.type === 'B' ? 'Bishop' : p.type === 'N' ? 'Knight' : 'Pawn';
+  const name = p.type === 'K' ? 'King' : p.type === 'R' ? 'Rook' : p.type === 'B' ? 'Bishop' : p.type === 'N' ? 'Knight' : 'Pawn';
   return `/${name} ${color}.svg`;
 }
 

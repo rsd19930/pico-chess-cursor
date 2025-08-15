@@ -28,6 +28,6 @@ export type GameState = {
   legal?: Array<{ from?: Square; to?: Square; drop?: { piece: PieceType; square: Square } }>;
 };
 
-export type MovePayload = { from?: Square; to?: Square; drop?: { piece: string; square: Square } };
+export type MovePayload = { from?: Square; to?: Square; drop?: { piece: PieceType; square: Square } };
 
 

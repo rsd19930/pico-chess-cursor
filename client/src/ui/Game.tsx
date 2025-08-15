@@ -75,10 +75,8 @@ export function Game(){
       // fire confetti on the winner's system only
       try {
         if (myColor && myColor === res.winner) {
-          // dynamic import of canvas-confetti (no npm dep; use CDN if needed)
-          import('https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.module.mjs')
-            .then(m => m.default({ particleCount: 140, spread: 70, origin: { y: 0.6 } }))
-            .catch(()=>{});
+          // lazy-load local helper
+          import('./confetti').then(m => m.fireConfetti()).catch(()=>{});
         }
       } catch {}
     })
@@ -188,7 +186,7 @@ export function Game(){
       </div>
 
       <div className="section-card">
-        <BoardView board={state?.board} turn={state?.turn} myColor={myColor} onSquareClick={onSquareClick} selected={selected} holdingDrop={holdingDrop} legal={state?.legal as any} />
+        <BoardView board={state?.board} turn={state?.turn} myColor={myColor} onSquareClick={onSquareClick} selected={selected} holdingDrop={holdingDrop} legal={state as any && (state as any).legal} />
       </div>
 
       {/* My hand (bottom) */}

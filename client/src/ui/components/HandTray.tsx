@@ -4,7 +4,7 @@ type Color = 'white' | 'black';
 type PieceType = 'K' | 'R' | 'N' | 'B' | 'P';
 
 function pieceSrc(type: PieceType, color: Color){
-  const name = type === 'K' ? 'King' : type === 'Q' ? 'Queen' : type === 'R' ? 'Rook' : type === 'B' ? 'Bishop' : type === 'N' ? 'Knight' : 'Pawn';
+  const name = type === 'K' ? 'King' : type === 'R' ? 'Rook' : type === 'B' ? 'Bishop' : type === 'N' ? 'Knight' : 'Pawn';
   const c = color === 'white' ? 'White' : 'Black';
   return `/${name} ${c}.svg`;
 }
