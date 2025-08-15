@@ -1,0 +1,16 @@
+{
+  "name": "pico-chess",
+  "private": true,
+  "scripts": {
+    "install-all": "npm --prefix server i && npm --prefix client i",
+    "dev": "concurrently -n server,client -c blue,green \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "cross-env VITE_SERVER_URL=http://localhost:4000 npm --prefix client run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "cross-env": "^7.0.3"
+  }
+}
+
+
