@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
       - key: BOT_JOIN_TIMEOUT_MS
         value: "60000"
       - key: CLIENT_ORIGIN
