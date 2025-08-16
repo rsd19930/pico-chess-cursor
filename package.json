@@ -2,7 +2,7 @@
   "name": "pico-chess",
   "private": true,
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "scripts": {
     "install-all": "npm --prefix server i && npm --prefix client i",
