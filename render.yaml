@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: pico-chess
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: BOT_JOIN_TIMEOUT_MS
+        value: "60000"
+      - key: CLIENT_ORIGIN
+        value: "*"
+    autoDeploy: true
+
+

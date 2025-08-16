@@ -1,8 +1,12 @@
 {
   "name": "pico-chess",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "install-all": "npm --prefix server i && npm --prefix client i",
+    "postinstall": "npm run install-all",
     "dev": "concurrently -n server,client -c blue,green \"npm:dev:server\" \"npm:dev:client\"",
     "dev:server": "npm --prefix server run dev",
     "dev:client": "cross-env VITE_SERVER_URL=http://localhost:4000 npm --prefix client run dev",
