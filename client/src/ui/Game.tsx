@@ -23,7 +23,8 @@ type GameState = {
   clocks: { whiteMs: number; blackMs: number };
 };
 
-const SERVER_URL = (import.meta as any).env.VITE_SERVER_URL || 'http://localhost:4000';
+// In production on Render, client and server are same-origin. Fallback to window.location.origin.
+const SERVER_URL: string = (import.meta as any).env.VITE_SERVER_URL || (typeof window !== 'undefined' ? window.location.origin : '');
 
 export function Game(){
   const [socket, setSocket] = useState<Socket|undefined>();
@@ -47,7 +48,13 @@ export function Game(){
     setSocket(s);
     s.on('connect', ()=> setConnected(true));
     s.on('disconnect', ()=> setConnected(false));
-    s.on('waiting', (w)=> { setWaiting(w); waitingStartRef.current = Date.now(); setWaitingLeftMs(w.timeoutMs); setPhase('matching'); });
+    s.on('waiting', (w)=> {
+      setWaiting(w);
+      // use server time reference if provided in future; for now, reset baseline explicitly
+      waitingStartRef.current = Date.now();
+      setWaitingLeftMs(w.timeoutMs);
+      setPhase('matching');
+    });
     s.on('match_found', (p: { gameId:string; color: Color; state: GameState })=>{
       setGameId(p.gameId);
       setMyColor(p.color);

@@ -9,19 +9,14 @@ import { createMatchmakingService } from './matchmaking/service';
 import { createGameService } from './pico/gameService';
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
-const ORIGIN = process.env.CLIENT_ORIGIN || '*';
+const ORIGIN = process.env.CLIENT_ORIGIN || true;
 
 const app = express();
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: ORIGIN,
-    methods: ['GET', 'POST']
-  }
-});
+const io = new Server(server, { cors: { origin: ORIGIN } });
 
 const gameService = createGameService();
 const matchmaking = createMatchmakingService(io, gameService, {
