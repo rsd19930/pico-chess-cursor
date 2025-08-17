@@ -42,7 +42,8 @@ export function Game(){
   const [nameInput, setNameInput] = useState<string>('');
 
   useEffect(() => {
-    const s = io(SERVER_URL, { transports:['websocket'] });
+    // Allow Socket.IO to negotiate transports (polling/websocket) for better mobile compatibility
+    const s = io(SERVER_URL);
     setSocket(s);
     s.on('connect', ()=> setConnected(true));
     s.on('disconnect', ()=> setConnected(false));
@@ -93,15 +94,16 @@ export function Game(){
   // Matchmaking countdown
   useEffect(()=>{
     if (phase !== 'matching' || !waiting) return;
-    let raf: number;
-    const tick = () => {
-      const elapsed = Date.now() - waitingStartRef.current;
+    // Use setInterval for broader mobile compatibility; 250ms granularity
+    setWaitingLeftMs(waiting.timeoutMs);
+    const start = waitingStartRef.current || Date.now();
+    const id = window.setInterval(()=>{
+      const elapsed = Date.now() - start;
       const left = Math.max(0, waiting.timeoutMs - elapsed);
       setWaitingLeftMs(left);
-      raf = window.requestAnimationFrame(tick);
-    };
-    raf = window.requestAnimationFrame(tick);
-    return ()=> { if (raf) cancelAnimationFrame(raf); };
+      if (left <= 0) window.clearInterval(id);
+    }, 250);
+    return ()=> window.clearInterval(id);
   }, [phase, waiting]);
 
   function onSquareClick(sq: Square){
