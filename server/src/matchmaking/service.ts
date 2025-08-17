@@ -31,6 +31,8 @@ export function createMatchmakingService(io: Server, gameService: GameService, c
   }
 
   function requestMatch(socket: Socket, name: string) {
+    // Prevent duplicates in queue for this socket
+    cleanupWaiting(socket.id);
     // If someone already waiting, pair them
     const opponent = waitingQueue.shift();
     if (opponent) {
@@ -44,7 +46,10 @@ export function createMatchmakingService(io: Server, gameService: GameService, c
       socketIdToRoomId.set(black, gameId);
       socket.join(gameId);
       io.sockets.sockets.get(opponent.socketId)?.join(gameId);
-      const state = gameService.createGame(gameId, { whiteName: name, blackName: opponent.name });
+      const state = gameService.createGame(gameId, {
+        whiteName: white === socket.id ? name : opponent.name,
+        blackName: black === socket.id ? name : opponent.name
+      });
       lastTick.set(gameId, Date.now());
       // Emit color to each player individually to avoid race/mismatch
       io.to(white).emit('match_found', { gameId, color: 'white', state });
@@ -64,10 +69,15 @@ export function createMatchmakingService(io: Server, gameService: GameService, c
       const white = playerIsWhite ? socket.id : 'BOT';
       const black = playerIsWhite ? 'BOT' : socket.id;
       rooms.set(gameId, { id: gameId, white, black });
-      socketIdToRoomId.set(white, gameId);
+      if (white !== 'BOT') socketIdToRoomId.set(white, gameId);
+      if (black !== 'BOT') socketIdToRoomId.set(black, gameId);
       socket.join(gameId);
       const bot = createBot('Kodiac');
-      const state = gameService.createGame(gameId, { whiteName: name, blackName: 'Kodiac', bot });
+      const state = gameService.createGame(gameId, {
+        whiteName: playerIsWhite ? name : 'Kodiac',
+        blackName: playerIsWhite ? 'Kodiac' : name,
+        bot
+      });
       lastTick.set(gameId, Date.now());
       const socketColor = playerIsWhite ? 'white' : 'black';
       io.to(socket.id).emit('match_found', { gameId, color: socketColor, state });

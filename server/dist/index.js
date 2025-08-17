@@ -12,17 +12,12 @@ const uuid_1 = require("uuid");
 const service_1 = require("./matchmaking/service");
 const gameService_1 = require("./pico/gameService");
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
-const ORIGIN = process.env.CLIENT_ORIGIN || '*';
+const ORIGIN = process.env.CLIENT_ORIGIN || true;
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: ORIGIN }));
 app.use(express_1.default.json());
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server, {
-    cors: {
-        origin: ORIGIN,
-        methods: ['GET', 'POST']
-    }
-});
+const io = new socket_io_1.Server(server, { cors: { origin: ORIGIN } });
 const gameService = (0, gameService_1.createGameService)();
 const matchmaking = (0, service_1.createMatchmakingService)(io, gameService, {
     botJoinTimeoutMs: Number(process.env.BOT_JOIN_TIMEOUT_MS || 60000)
